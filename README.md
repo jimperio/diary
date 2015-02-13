@@ -1,0 +1,1 @@
+Simple shared diary using Flask and React.
