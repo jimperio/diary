@@ -5,7 +5,7 @@ module.exports = React.createClass({
   render() {
     return (
       <div>
-        Hello, world!
+        <div className="header">Hello, world!</div>
       </div>
     )
   },
