@@ -1,1 +1,1 @@
-Simple shared diary using Flask and React.
+Simple shared diary using Flask and Mithril.

@@ -1,19 +1,63 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Hello</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet" />
+  <script src="{{ url_for('static', filename='js/mithril.min.js') }}"></script>
 </head>
+
 <body>
-  <div id="main"></div>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script>
-    React.render(
-      React.createElement(App),
-      document.getElementById("main")
-    )
+    var blog = {};
+
+    blog.Entry = function(data) {
+      this.title = data.title;
+      this.text = data.text;
+    };
+
+    blog.EntryList = Array;
+
+    blog.vm = (function() {
+      var vm = {}
+      vm.init = function() {
+        vm.list = new blog.EntryList();
+
+        vm.title = m.prop("");
+        vm.text = m.prop("");
+
+        vm.add = function() {
+          vm.list.push(new blog.Entry({title: vm.title(), text: vm.text()}));
+          vm.title("");
+          vm.text("");
+        }
+      }
+
+      return vm;
+    }())
+
+    blog.controller = function() {
+      blog.vm.init()
+    }
+
+    blog.view = function() {
+      return m("div.content", [
+        m("input.title", {onchange: m.withAttr("value", blog.vm.title),
+           value: blog.vm.title()}),
+        m("textarea.text", {onchange: m.withAttr("value", blog.vm.text),
+           value: blog.vm.text()}),
+        m("button.add", {onclick: blog.vm.add}, "Add"),
+        m("ul", [
+          blog.vm.list.map(function(entry, index) {
+            return m("li", [
+              m("span", entry.title),
+              m("div", entry.text),
+            ])
+          })
+        ])
+      ])
+    }
+
+    m.module(document.body, {controller: blog.controller, view: blog.view});
   </script>
 </body>
 </html>
